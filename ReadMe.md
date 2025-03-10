@@ -1,4 +1,4 @@
-TEAM LEADER: Mateusz Mazurek
+SELF LEADER: Mateusz Mazurek
 
 # Reports
 
