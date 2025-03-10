@@ -1,2330 +1,2522 @@
-# Exercise 1. - Getting and Knowing your Data
-
-This time we are going to pull data directly from the internet.
-Special thanks to: https://github.com/justmarkham for sharing the dataset and materials.
-
-Check out [Occupation Exercises Video Tutorial](https://www.youtube.com/watch?v=W8AB5s-L3Rw&list=PLgJhDSE2ZLxaY_DigHeiIDC1cD09rXgJv&index=4) to watch a data scientist go through the exercises
-
-### Step 1. Import the necessary libraries
-
-
-```python
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-```
-
-### Step 2. Import the dataset from this [address](https://raw.githubusercontent.com/justmarkham/DAT8/master/data/u.user). 
-
-### Step 3. Assign it to a variable called users and use the 'user_id' as index
-
-
-```python
-users = pd.read_csv("https://raw.githubusercontent.com/justmarkham/DAT8/master/data/u.user", sep="|", index_col="user_id")
-```
-
-### Step 4. See the first 25 entries
-
-
-```python
-users.head(25)
-```
-
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Learn how to summarize the columns available in an R data frame. \n",
+    "  You will also learn how to chain operations together with the\n",
+    "  pipe operator, and how to compute grouped summaries using."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Welcome!\n",
+    "\n",
+    "Hey there! Ready for the first lesson?\n",
+    "\n",
+    "The dfply package makes it possible to do R's dplyr-style data manipulation with pipes in python on pandas DataFrames.\n",
+    "\n",
+    "[dfply website here](https://github.com/kieferk/dfply)\n",
+    "\n",
+    "[![](https://www.rforecology.com/pipes_image0.png \"https://github.com/kieferk/dfply\"){width=\"600\"}](https://github.com/kieferk/dfply)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>mpg</th>\n",
+       "      <th>cylinders</th>\n",
+       "      <th>displacement</th>\n",
+       "      <th>horsepower</th>\n",
+       "      <th>weight</th>\n",
+       "      <th>acceleration</th>\n",
+       "      <th>model_year</th>\n",
+       "      <th>origin</th>\n",
+       "      <th>name</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>18.0</td>\n",
+       "      <td>8</td>\n",
+       "      <td>307.0</td>\n",
+       "      <td>130.0</td>\n",
+       "      <td>3504</td>\n",
+       "      <td>12.0</td>\n",
+       "      <td>70</td>\n",
+       "      <td>usa</td>\n",
+       "      <td>chevrolet chevelle malibu</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>15.0</td>\n",
+       "      <td>8</td>\n",
+       "      <td>350.0</td>\n",
+       "      <td>165.0</td>\n",
+       "      <td>3693</td>\n",
+       "      <td>11.5</td>\n",
+       "      <td>70</td>\n",
+       "      <td>usa</td>\n",
+       "      <td>buick skylark 320</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>18.0</td>\n",
+       "      <td>8</td>\n",
+       "      <td>318.0</td>\n",
+       "      <td>150.0</td>\n",
+       "      <td>3436</td>\n",
+       "      <td>11.0</td>\n",
+       "      <td>70</td>\n",
+       "      <td>usa</td>\n",
+       "      <td>plymouth satellite</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "    mpg  cylinders  displacement  horsepower  weight  acceleration  \\\n",
+       "0  18.0          8         307.0       130.0    3504          12.0   \n",
+       "1  15.0          8         350.0       165.0    3693          11.5   \n",
+       "2  18.0          8         318.0       150.0    3436          11.0   \n",
+       "\n",
+       "   model_year origin                       name  \n",
+       "0          70    usa  chevrolet chevelle malibu  \n",
+       "1          70    usa          buick skylark 320  \n",
+       "2          70    usa         plymouth satellite  "
+      ]
+     },
+     "execution_count": 1,
+     "metadata": {},
+     "output_type": "execute_result"
     }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
+   ],
+   "source": [
+    "import pandas as pd\n",
+    "import seaborn as sns\n",
+    "cars = sns.load_dataset('mpg')\n",
+    "from dfply import *\n",
+    "cars >> head(3)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## The \\>\\> and \\>\\>=\n",
+    "\n",
+    "dfply works directly on pandas DataFrames, chaining operations on the data with the >> operator, or alternatively starting with >>= for inplace operations.\n",
+    "\n",
+    "*The X DataFrame symbol*\n",
+    "\n",
+    "The DataFrame as it is passed through the piping operations is represented by the symbol X. It records the actions you want to take (represented by the Intention class), but does not evaluate them until the appropriate time. Operations on the DataFrame are deferred. Selecting two of the columns, for example, can be done using the symbolic X DataFrame during the piping operations."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Exercise 1.\n",
+    "\n",
+    "Select the columns 'mpg' and 'horsepower' from the cars DataFrame."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>mpg</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>18.0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>15.0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>18.0</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "    mpg\n",
+       "0  18.0\n",
+       "1  15.0\n",
+       "2  18.0"
+      ]
+     },
+     "execution_count": 2,
+     "metadata": {},
+     "output_type": "execute_result"
     }
-
-    .dataframe thead th {
-        text-align: right;
+   ],
+   "source": [
+    "# your solution goes here\n",
+    "cars >> select(X.mpg) >> head(3)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Selecting and dropping\n",
+    "\n",
+    "There are two functions for selection, inverse of each other: select and drop. The select and drop functions accept string labels, integer positions, and/or symbolically represented column names (X.column). They also accept symbolic \"selection filter\" functions, which will be covered shortly.\n",
+    "\n",
+    "### Exercise 2.\n",
+    "\n",
+    "Select the columns 'mpg' and 'horsepower' from the cars DataFrame using the drop function."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>cylinders</th>\n",
+       "      <th>displacement</th>\n",
+       "      <th>weight</th>\n",
+       "      <th>acceleration</th>\n",
+       "      <th>model_year</th>\n",
+       "      <th>origin</th>\n",
+       "      <th>name</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>8</td>\n",
+       "      <td>307.0</td>\n",
+       "      <td>3504</td>\n",
+       "      <td>12.0</td>\n",
+       "      <td>70</td>\n",
+       "      <td>usa</td>\n",
+       "      <td>chevrolet chevelle malibu</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>8</td>\n",
+       "      <td>350.0</td>\n",
+       "      <td>3693</td>\n",
+       "      <td>11.5</td>\n",
+       "      <td>70</td>\n",
+       "      <td>usa</td>\n",
+       "      <td>buick skylark 320</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>8</td>\n",
+       "      <td>318.0</td>\n",
+       "      <td>3436</td>\n",
+       "      <td>11.0</td>\n",
+       "      <td>70</td>\n",
+       "      <td>usa</td>\n",
+       "      <td>plymouth satellite</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "   cylinders  displacement  weight  acceleration  model_year origin  \\\n",
+       "0          8         307.0    3504          12.0          70    usa   \n",
+       "1          8         350.0    3693          11.5          70    usa   \n",
+       "2          8         318.0    3436          11.0          70    usa   \n",
+       "\n",
+       "                        name  \n",
+       "0  chevrolet chevelle malibu  \n",
+       "1          buick skylark 320  \n",
+       "2         plymouth satellite  "
+      ]
+     },
+     "execution_count": 3,
+     "metadata": {},
+     "output_type": "execute_result"
     }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>age</th>
-      <th>gender</th>
-      <th>occupation</th>
-      <th>zip_code</th>
-    </tr>
-    <tr>
-      <th>user_id</th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>1</th>
-      <td>24</td>
-      <td>M</td>
-      <td>technician</td>
-      <td>85711</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>53</td>
-      <td>F</td>
-      <td>other</td>
-      <td>94043</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>23</td>
-      <td>M</td>
-      <td>writer</td>
-      <td>32067</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>24</td>
-      <td>M</td>
-      <td>technician</td>
-      <td>43537</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>33</td>
-      <td>F</td>
-      <td>other</td>
-      <td>15213</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>42</td>
-      <td>M</td>
-      <td>executive</td>
-      <td>98101</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>57</td>
-      <td>M</td>
-      <td>administrator</td>
-      <td>91344</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>36</td>
-      <td>M</td>
-      <td>administrator</td>
-      <td>05201</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>29</td>
-      <td>M</td>
-      <td>student</td>
-      <td>01002</td>
-    </tr>
-    <tr>
-      <th>10</th>
-      <td>53</td>
-      <td>M</td>
-      <td>lawyer</td>
-      <td>90703</td>
-    </tr>
-    <tr>
-      <th>11</th>
-      <td>39</td>
-      <td>F</td>
-      <td>other</td>
-      <td>30329</td>
-    </tr>
-    <tr>
-      <th>12</th>
-      <td>28</td>
-      <td>F</td>
-      <td>other</td>
-      <td>06405</td>
-    </tr>
-    <tr>
-      <th>13</th>
-      <td>47</td>
-      <td>M</td>
-      <td>educator</td>
-      <td>29206</td>
-    </tr>
-    <tr>
-      <th>14</th>
-      <td>45</td>
-      <td>M</td>
-      <td>scientist</td>
-      <td>55106</td>
-    </tr>
-    <tr>
-      <th>15</th>
-      <td>49</td>
-      <td>F</td>
-      <td>educator</td>
-      <td>97301</td>
-    </tr>
-    <tr>
-      <th>16</th>
-      <td>21</td>
-      <td>M</td>
-      <td>entertainment</td>
-      <td>10309</td>
-    </tr>
-    <tr>
-      <th>17</th>
-      <td>30</td>
-      <td>M</td>
-      <td>programmer</td>
-      <td>06355</td>
-    </tr>
-    <tr>
-      <th>18</th>
-      <td>35</td>
-      <td>F</td>
-      <td>other</td>
-      <td>37212</td>
-    </tr>
-    <tr>
-      <th>19</th>
-      <td>40</td>
-      <td>M</td>
-      <td>librarian</td>
-      <td>02138</td>
-    </tr>
-    <tr>
-      <th>20</th>
-      <td>42</td>
-      <td>F</td>
-      <td>homemaker</td>
-      <td>95660</td>
-    </tr>
-    <tr>
-      <th>21</th>
-      <td>26</td>
-      <td>M</td>
-      <td>writer</td>
-      <td>30068</td>
-    </tr>
-    <tr>
-      <th>22</th>
-      <td>25</td>
-      <td>M</td>
-      <td>writer</td>
-      <td>40206</td>
-    </tr>
-    <tr>
-      <th>23</th>
-      <td>30</td>
-      <td>F</td>
-      <td>artist</td>
-      <td>48197</td>
-    </tr>
-    <tr>
-      <th>24</th>
-      <td>21</td>
-      <td>F</td>
-      <td>artist</td>
-      <td>94533</td>
-    </tr>
-    <tr>
-      <th>25</th>
-      <td>39</td>
-      <td>M</td>
-      <td>engineer</td>
-      <td>55107</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-### Step 5. See the last 10 entries
-
-
-```python
-users.tail(10)
-```
-
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
+   ],
+   "source": [
+    "# your solution goes here\n",
+    "cars >> drop(X.mpg, X.horsepower) >> head(3)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Selection using \\~\n",
+    "\n",
+    "One particularly nice thing about dplyr's selection functions is that you can drop columns inside of a select statement by putting a subtraction sign in front, like so: ... %>% select(-col). The same can be done in dfply, but instead of the subtraction operator you use the tilde ~.\n",
+    "\n",
+    "### Exercise 3.\n",
+    "\n",
+    "Select all columns except 'model_year', and 'name' from the cars DataFrame."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>mpg</th>\n",
+       "      <th>cylinders</th>\n",
+       "      <th>displacement</th>\n",
+       "      <th>horsepower</th>\n",
+       "      <th>weight</th>\n",
+       "      <th>acceleration</th>\n",
+       "      <th>origin</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>18.0</td>\n",
+       "      <td>8</td>\n",
+       "      <td>307.0</td>\n",
+       "      <td>130.0</td>\n",
+       "      <td>3504</td>\n",
+       "      <td>12.0</td>\n",
+       "      <td>usa</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>15.0</td>\n",
+       "      <td>8</td>\n",
+       "      <td>350.0</td>\n",
+       "      <td>165.0</td>\n",
+       "      <td>3693</td>\n",
+       "      <td>11.5</td>\n",
+       "      <td>usa</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>18.0</td>\n",
+       "      <td>8</td>\n",
+       "      <td>318.0</td>\n",
+       "      <td>150.0</td>\n",
+       "      <td>3436</td>\n",
+       "      <td>11.0</td>\n",
+       "      <td>usa</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "    mpg  cylinders  displacement  horsepower  weight  acceleration origin\n",
+       "0  18.0          8         307.0       130.0    3504          12.0    usa\n",
+       "1  15.0          8         350.0       165.0    3693          11.5    usa\n",
+       "2  18.0          8         318.0       150.0    3436          11.0    usa"
+      ]
+     },
+     "execution_count": 4,
+     "metadata": {},
+     "output_type": "execute_result"
     }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
+   ],
+   "source": [
+    "# your solution goes here\n",
+    "cars >> select(~X.model_year, ~X.name) >> head(3)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Filtering columns\n",
+    "\n",
+    "The vanilla select and drop functions are useful, but there are a variety of selection functions inspired by dplyr available to make selecting and dropping columns a breeze. These functions are intended to be put inside of the select and drop functions, and can be paired with the ~ inverter.\n",
+    "\n",
+    "First, a quick rundown of the available functions:\n",
+    "\n",
+    "-   starts_with(prefix): find columns that start with a string prefix.\n",
+    "-   ends_with(suffix): find columns that end with a string suffix.\n",
+    "-   contains(substr): find columns that contain a substring in their name.\n",
+    "-   everything(): all columns.\n",
+    "-   columns_between(start_col, end_col, inclusive=True): find columns between a specified start and end column. The inclusive boolean keyword argument indicates whether the end column should be included or not.\n",
+    "-   columns_to(end_col, inclusive=True): get columns up to a specified end column. The inclusive argument indicates whether the ending column should be included or not.\n",
+    "-   columns_from(start_col): get the columns starting at a specified column.\n",
+    "\n",
+    "### Exercise 4.\n",
+    "\n",
+    "The selection filter functions are best explained by example. Let's say I wanted to select only the columns that started with a \"c\":"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>cylinders</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>8</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>8</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>8</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "   cylinders\n",
+       "0          8\n",
+       "1          8\n",
+       "2          8"
+      ]
+     },
+     "execution_count": 5,
+     "metadata": {},
+     "output_type": "execute_result"
     }
-
-    .dataframe thead th {
-        text-align: right;
+   ],
+   "source": [
+    "# your solution goes here\n",
+    "cars >> select(starts_with(\"c\")) >> head(3)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Exercise 5.\n",
+    "\n",
+    "Select the columns that contain the substring \"e\" from the cars DataFrame."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>cylinders</th>\n",
+       "      <th>displacement</th>\n",
+       "      <th>horsepower</th>\n",
+       "      <th>weight</th>\n",
+       "      <th>acceleration</th>\n",
+       "      <th>model_year</th>\n",
+       "      <th>name</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>8</td>\n",
+       "      <td>307.0</td>\n",
+       "      <td>130.0</td>\n",
+       "      <td>3504</td>\n",
+       "      <td>12.0</td>\n",
+       "      <td>70</td>\n",
+       "      <td>chevrolet chevelle malibu</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>8</td>\n",
+       "      <td>350.0</td>\n",
+       "      <td>165.0</td>\n",
+       "      <td>3693</td>\n",
+       "      <td>11.5</td>\n",
+       "      <td>70</td>\n",
+       "      <td>buick skylark 320</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>8</td>\n",
+       "      <td>318.0</td>\n",
+       "      <td>150.0</td>\n",
+       "      <td>3436</td>\n",
+       "      <td>11.0</td>\n",
+       "      <td>70</td>\n",
+       "      <td>plymouth satellite</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "   cylinders  displacement  horsepower  weight  acceleration  model_year  \\\n",
+       "0          8         307.0       130.0    3504          12.0          70   \n",
+       "1          8         350.0       165.0    3693          11.5          70   \n",
+       "2          8         318.0       150.0    3436          11.0          70   \n",
+       "\n",
+       "                        name  \n",
+       "0  chevrolet chevelle malibu  \n",
+       "1          buick skylark 320  \n",
+       "2         plymouth satellite  "
+      ]
+     },
+     "execution_count": 6,
+     "metadata": {},
+     "output_type": "execute_result"
     }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>age</th>
-      <th>gender</th>
-      <th>occupation</th>
-      <th>zip_code</th>
-    </tr>
-    <tr>
-      <th>user_id</th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>934</th>
-      <td>61</td>
-      <td>M</td>
-      <td>engineer</td>
-      <td>22902</td>
-    </tr>
-    <tr>
-      <th>935</th>
-      <td>42</td>
-      <td>M</td>
-      <td>doctor</td>
-      <td>66221</td>
-    </tr>
-    <tr>
-      <th>936</th>
-      <td>24</td>
-      <td>M</td>
-      <td>other</td>
-      <td>32789</td>
-    </tr>
-    <tr>
-      <th>937</th>
-      <td>48</td>
-      <td>M</td>
-      <td>educator</td>
-      <td>98072</td>
-    </tr>
-    <tr>
-      <th>938</th>
-      <td>38</td>
-      <td>F</td>
-      <td>technician</td>
-      <td>55038</td>
-    </tr>
-    <tr>
-      <th>939</th>
-      <td>26</td>
-      <td>F</td>
-      <td>student</td>
-      <td>33319</td>
-    </tr>
-    <tr>
-      <th>940</th>
-      <td>32</td>
-      <td>M</td>
-      <td>administrator</td>
-      <td>02215</td>
-    </tr>
-    <tr>
-      <th>941</th>
-      <td>20</td>
-      <td>M</td>
-      <td>student</td>
-      <td>97229</td>
-    </tr>
-    <tr>
-      <th>942</th>
-      <td>48</td>
-      <td>F</td>
-      <td>librarian</td>
-      <td>78209</td>
-    </tr>
-    <tr>
-      <th>943</th>
-      <td>22</td>
-      <td>M</td>
-      <td>student</td>
-      <td>77841</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-### Step 6. What is the number of observations in the dataset?
-
-
-```python
-users.shape[0]
-```
-
-
-
-
-    943
-
-
-
-### Step 7. What is the number of columns in the dataset?
-
-
-```python
-users.shape[1]
-```
-
-
-
-
-    4
-
-
-
-### Step 8. Print the name of all the columns.
-
-
-```python
-users.columns.to_list()
-```
-
-
-
-
-    ['age', 'gender', 'occupation', 'zip_code']
-
-
-
-### Step 9. How is the dataset indexed?
-
-
-```python
-users.index.name
-```
-
-
-
-
-    'user_id'
-
-
-
-### Step 10. What is the data type of each column?
-
-
-```python
-users.dtypes
-```
-
-
-
-
-    age            int64
-    gender        object
-    occupation    object
-    zip_code      object
-    dtype: object
-
-
-
-### Step 11. Print only the occupation column
-
-
-```python
-users["occupation"]
-```
-
-
-
-
-    user_id
-    1         technician
-    2              other
-    3             writer
-    4         technician
-    5              other
-               ...      
-    939          student
-    940    administrator
-    941          student
-    942        librarian
-    943          student
-    Name: occupation, Length: 943, dtype: object
-
-
-
-### Step 12. How many different occupations are in this dataset?
-
-
-```python
-users["occupation"].unique().size
-```
-
-
-
-
-    21
-
-
-
-### Step 13. What is the most frequent occupation?
-
-
-```python
-users["occupation"].value_counts().head(1)
-```
-
-
-
-
-    occupation
-    student    196
-    Name: count, dtype: int64
-
-
-
-### Step 14. Summarize the DataFrame.
-
-
-```python
-users.describe()
-```
-
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
+   ],
+   "source": [
+    "# your solution goes here\n",
+    "cars >> select(contains('e')) >> head(3)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Exercise 6.\n",
+    "\n",
+    "Select the columns that are between 'mpg' and 'origin' from the cars DataFrame."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>mpg</th>\n",
+       "      <th>cylinders</th>\n",
+       "      <th>displacement</th>\n",
+       "      <th>horsepower</th>\n",
+       "      <th>weight</th>\n",
+       "      <th>acceleration</th>\n",
+       "      <th>model_year</th>\n",
+       "      <th>origin</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>18.0</td>\n",
+       "      <td>8</td>\n",
+       "      <td>307.0</td>\n",
+       "      <td>130.0</td>\n",
+       "      <td>3504</td>\n",
+       "      <td>12.0</td>\n",
+       "      <td>70</td>\n",
+       "      <td>usa</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>15.0</td>\n",
+       "      <td>8</td>\n",
+       "      <td>350.0</td>\n",
+       "      <td>165.0</td>\n",
+       "      <td>3693</td>\n",
+       "      <td>11.5</td>\n",
+       "      <td>70</td>\n",
+       "      <td>usa</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>18.0</td>\n",
+       "      <td>8</td>\n",
+       "      <td>318.0</td>\n",
+       "      <td>150.0</td>\n",
+       "      <td>3436</td>\n",
+       "      <td>11.0</td>\n",
+       "      <td>70</td>\n",
+       "      <td>usa</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "    mpg  cylinders  displacement  horsepower  weight  acceleration  \\\n",
+       "0  18.0          8         307.0       130.0    3504          12.0   \n",
+       "1  15.0          8         350.0       165.0    3693          11.5   \n",
+       "2  18.0          8         318.0       150.0    3436          11.0   \n",
+       "\n",
+       "   model_year origin  \n",
+       "0          70    usa  \n",
+       "1          70    usa  \n",
+       "2          70    usa  "
+      ]
+     },
+     "execution_count": 7,
+     "metadata": {},
+     "output_type": "execute_result"
     }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
+   ],
+   "source": [
+    "# your solution goes here\n",
+    "cars >> select(columns_between(X.mpg, X.origin)) >> head(3)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Subsetting and filtering\n",
+    "\n",
+    "### row_slice()\n",
+    "\n",
+    "Slices of rows can be selected with the row_slice() function. You can pass single integer indices or a list of indices to select rows as with. This is going to be the same as using pandas' .iloc.\n",
+    "\n",
+    "#### Exercise 7.\n",
+    "\n",
+    "Select the first three rows from the cars DataFrame."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>mpg</th>\n",
+       "      <th>cylinders</th>\n",
+       "      <th>displacement</th>\n",
+       "      <th>horsepower</th>\n",
+       "      <th>weight</th>\n",
+       "      <th>acceleration</th>\n",
+       "      <th>model_year</th>\n",
+       "      <th>origin</th>\n",
+       "      <th>name</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>18.0</td>\n",
+       "      <td>8</td>\n",
+       "      <td>307.0</td>\n",
+       "      <td>130.0</td>\n",
+       "      <td>3504</td>\n",
+       "      <td>12.0</td>\n",
+       "      <td>70</td>\n",
+       "      <td>usa</td>\n",
+       "      <td>chevrolet chevelle malibu</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>15.0</td>\n",
+       "      <td>8</td>\n",
+       "      <td>350.0</td>\n",
+       "      <td>165.0</td>\n",
+       "      <td>3693</td>\n",
+       "      <td>11.5</td>\n",
+       "      <td>70</td>\n",
+       "      <td>usa</td>\n",
+       "      <td>buick skylark 320</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>18.0</td>\n",
+       "      <td>8</td>\n",
+       "      <td>318.0</td>\n",
+       "      <td>150.0</td>\n",
+       "      <td>3436</td>\n",
+       "      <td>11.0</td>\n",
+       "      <td>70</td>\n",
+       "      <td>usa</td>\n",
+       "      <td>plymouth satellite</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "    mpg  cylinders  displacement  horsepower  weight  acceleration  \\\n",
+       "0  18.0          8         307.0       130.0    3504          12.0   \n",
+       "1  15.0          8         350.0       165.0    3693          11.5   \n",
+       "2  18.0          8         318.0       150.0    3436          11.0   \n",
+       "\n",
+       "   model_year origin                       name  \n",
+       "0          70    usa  chevrolet chevelle malibu  \n",
+       "1          70    usa          buick skylark 320  \n",
+       "2          70    usa         plymouth satellite  "
+      ]
+     },
+     "execution_count": 8,
+     "metadata": {},
+     "output_type": "execute_result"
     }
-
-    .dataframe thead th {
-        text-align: right;
+   ],
+   "source": [
+    "# your solution goes here\n",
+    "cars >> row_slice(pd.Series(range(3))) >> head(3)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### distinct()\n",
+    "\n",
+    "Selection of unique rows is done with distinct(), which similarly passes arguments and keyword arguments through to the DataFrame's .drop_duplicates() method.\n",
+    "\n",
+    "#### Exercise 8.\n",
+    "\n",
+    "Select the unique rows from the 'origin' column in the cars DataFrame."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>mpg</th>\n",
+       "      <th>cylinders</th>\n",
+       "      <th>displacement</th>\n",
+       "      <th>horsepower</th>\n",
+       "      <th>weight</th>\n",
+       "      <th>acceleration</th>\n",
+       "      <th>model_year</th>\n",
+       "      <th>origin</th>\n",
+       "      <th>name</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>18.0</td>\n",
+       "      <td>8</td>\n",
+       "      <td>307.0</td>\n",
+       "      <td>130.0</td>\n",
+       "      <td>3504</td>\n",
+       "      <td>12.0</td>\n",
+       "      <td>70</td>\n",
+       "      <td>usa</td>\n",
+       "      <td>chevrolet chevelle malibu</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>14</th>\n",
+       "      <td>24.0</td>\n",
+       "      <td>4</td>\n",
+       "      <td>113.0</td>\n",
+       "      <td>95.0</td>\n",
+       "      <td>2372</td>\n",
+       "      <td>15.0</td>\n",
+       "      <td>70</td>\n",
+       "      <td>japan</td>\n",
+       "      <td>toyota corona mark ii</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>19</th>\n",
+       "      <td>26.0</td>\n",
+       "      <td>4</td>\n",
+       "      <td>97.0</td>\n",
+       "      <td>46.0</td>\n",
+       "      <td>1835</td>\n",
+       "      <td>20.5</td>\n",
+       "      <td>70</td>\n",
+       "      <td>europe</td>\n",
+       "      <td>volkswagen 1131 deluxe sedan</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "     mpg  cylinders  displacement  horsepower  weight  acceleration  \\\n",
+       "0   18.0          8         307.0       130.0    3504          12.0   \n",
+       "14  24.0          4         113.0        95.0    2372          15.0   \n",
+       "19  26.0          4          97.0        46.0    1835          20.5   \n",
+       "\n",
+       "    model_year  origin                          name  \n",
+       "0           70     usa     chevrolet chevelle malibu  \n",
+       "14          70   japan         toyota corona mark ii  \n",
+       "19          70  europe  volkswagen 1131 deluxe sedan  "
+      ]
+     },
+     "execution_count": 9,
+     "metadata": {},
+     "output_type": "execute_result"
     }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>age</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>count</th>
-      <td>943.000000</td>
-    </tr>
-    <tr>
-      <th>mean</th>
-      <td>34.051962</td>
-    </tr>
-    <tr>
-      <th>std</th>
-      <td>12.192740</td>
-    </tr>
-    <tr>
-      <th>min</th>
-      <td>7.000000</td>
-    </tr>
-    <tr>
-      <th>25%</th>
-      <td>25.000000</td>
-    </tr>
-    <tr>
-      <th>50%</th>
-      <td>31.000000</td>
-    </tr>
-    <tr>
-      <th>75%</th>
-      <td>43.000000</td>
-    </tr>
-    <tr>
-      <th>max</th>
-      <td>73.000000</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-### Step 15. Summarize all the columns
-
-
-```python
-users.describe(include="all")
-```
-
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
+   ],
+   "source": [
+    "# your solution goes here\n",
+    "cars >> distinct(X.origin)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## mask()\n",
+    "\n",
+    "Filtering rows with logical criteria is done with mask(), which accepts boolean arrays \"masking out\" False labeled rows and keeping True labeled rows. These are best created with logical statements on symbolic Series objects as shown below. Multiple criteria can be supplied as arguments and their intersection will be used as the mask.\n",
+    "\n",
+    "### Exercise 9.\n",
+    "\n",
+    "Filter the cars DataFrame to only include rows where the 'mpg' is greater than 20, origin Japan, and display the first three rows:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>mpg</th>\n",
+       "      <th>cylinders</th>\n",
+       "      <th>displacement</th>\n",
+       "      <th>horsepower</th>\n",
+       "      <th>weight</th>\n",
+       "      <th>acceleration</th>\n",
+       "      <th>model_year</th>\n",
+       "      <th>origin</th>\n",
+       "      <th>name</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>14</th>\n",
+       "      <td>24.0</td>\n",
+       "      <td>4</td>\n",
+       "      <td>113.0</td>\n",
+       "      <td>95.0</td>\n",
+       "      <td>2372</td>\n",
+       "      <td>15.0</td>\n",
+       "      <td>70</td>\n",
+       "      <td>japan</td>\n",
+       "      <td>toyota corona mark ii</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>18</th>\n",
+       "      <td>27.0</td>\n",
+       "      <td>4</td>\n",
+       "      <td>97.0</td>\n",
+       "      <td>88.0</td>\n",
+       "      <td>2130</td>\n",
+       "      <td>14.5</td>\n",
+       "      <td>70</td>\n",
+       "      <td>japan</td>\n",
+       "      <td>datsun pl510</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>29</th>\n",
+       "      <td>27.0</td>\n",
+       "      <td>4</td>\n",
+       "      <td>97.0</td>\n",
+       "      <td>88.0</td>\n",
+       "      <td>2130</td>\n",
+       "      <td>14.5</td>\n",
+       "      <td>71</td>\n",
+       "      <td>japan</td>\n",
+       "      <td>datsun pl510</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "     mpg  cylinders  displacement  horsepower  weight  acceleration  \\\n",
+       "14  24.0          4         113.0        95.0    2372          15.0   \n",
+       "18  27.0          4          97.0        88.0    2130          14.5   \n",
+       "29  27.0          4          97.0        88.0    2130          14.5   \n",
+       "\n",
+       "    model_year origin                   name  \n",
+       "14          70  japan  toyota corona mark ii  \n",
+       "18          70  japan           datsun pl510  \n",
+       "29          71  japan           datsun pl510  "
+      ]
+     },
+     "execution_count": 10,
+     "metadata": {},
+     "output_type": "execute_result"
     }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
+   ],
+   "source": [
+    "# your solution goes here\n",
+    "cars >> mask(X.mpg > 20, X.origin == 'japan') >> head(3)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## pull()\n",
+    "\n",
+    "The pull() function is used to extract a single column from a DataFrame as a pandas Series. This is useful for passing a single column to a function or for further manipulation.\n",
+    "\n",
+    "### Exercise 10.\n",
+    "\n",
+    "Extract the 'mpg' column from the cars DataFrame, japanese origin, model year 70s, and display the first three rows."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "14    24.0\n",
+       "18    27.0\n",
+       "Name: mpg, dtype: float64"
+      ]
+     },
+     "execution_count": 11,
+     "metadata": {},
+     "output_type": "execute_result"
     }
-
-    .dataframe thead th {
-        text-align: right;
+   ],
+   "source": [
+    "# your solution goes here\n",
+    "cars >> mask(X.origin == 'japan', X.model_year == 70) >> pull('mpg')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## DataFrame transformation\n",
+    "\n",
+    "*mutate()*\n",
+    "\n",
+    "The mutate() function is used to create new columns or modify existing columns. It accepts keyword arguments of the form new_column_name = new_column_value, where new_column_value is a symbolic Series object.\n",
+    "\n",
+    "### Exercise 11.\n",
+    "\n",
+    "Create a new column 'mpg_per_cylinder' in the cars DataFrame that is the result of dividing the 'mpg' column by the 'cylinders' column."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>mpg</th>\n",
+       "      <th>cylinders</th>\n",
+       "      <th>displacement</th>\n",
+       "      <th>horsepower</th>\n",
+       "      <th>weight</th>\n",
+       "      <th>acceleration</th>\n",
+       "      <th>model_year</th>\n",
+       "      <th>origin</th>\n",
+       "      <th>name</th>\n",
+       "      <th>mpg_per_cylinder</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>18.0</td>\n",
+       "      <td>8</td>\n",
+       "      <td>307.0</td>\n",
+       "      <td>130.0</td>\n",
+       "      <td>3504</td>\n",
+       "      <td>12.0</td>\n",
+       "      <td>70</td>\n",
+       "      <td>usa</td>\n",
+       "      <td>chevrolet chevelle malibu</td>\n",
+       "      <td>2.250</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>15.0</td>\n",
+       "      <td>8</td>\n",
+       "      <td>350.0</td>\n",
+       "      <td>165.0</td>\n",
+       "      <td>3693</td>\n",
+       "      <td>11.5</td>\n",
+       "      <td>70</td>\n",
+       "      <td>usa</td>\n",
+       "      <td>buick skylark 320</td>\n",
+       "      <td>1.875</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>18.0</td>\n",
+       "      <td>8</td>\n",
+       "      <td>318.0</td>\n",
+       "      <td>150.0</td>\n",
+       "      <td>3436</td>\n",
+       "      <td>11.0</td>\n",
+       "      <td>70</td>\n",
+       "      <td>usa</td>\n",
+       "      <td>plymouth satellite</td>\n",
+       "      <td>2.250</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "    mpg  cylinders  displacement  horsepower  weight  acceleration  \\\n",
+       "0  18.0          8         307.0       130.0    3504          12.0   \n",
+       "1  15.0          8         350.0       165.0    3693          11.5   \n",
+       "2  18.0          8         318.0       150.0    3436          11.0   \n",
+       "\n",
+       "   model_year origin                       name  mpg_per_cylinder  \n",
+       "0          70    usa  chevrolet chevelle malibu             2.250  \n",
+       "1          70    usa          buick skylark 320             1.875  \n",
+       "2          70    usa         plymouth satellite             2.250  "
+      ]
+     },
+     "execution_count": 12,
+     "metadata": {},
+     "output_type": "execute_result"
     }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>age</th>
-      <th>gender</th>
-      <th>occupation</th>
-      <th>zip_code</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>count</th>
-      <td>943.000000</td>
-      <td>943</td>
-      <td>943</td>
-      <td>943</td>
-    </tr>
-    <tr>
-      <th>unique</th>
-      <td>NaN</td>
-      <td>2</td>
-      <td>21</td>
-      <td>795</td>
-    </tr>
-    <tr>
-      <th>top</th>
-      <td>NaN</td>
-      <td>M</td>
-      <td>student</td>
-      <td>55414</td>
-    </tr>
-    <tr>
-      <th>freq</th>
-      <td>NaN</td>
-      <td>670</td>
-      <td>196</td>
-      <td>9</td>
-    </tr>
-    <tr>
-      <th>mean</th>
-      <td>34.051962</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>std</th>
-      <td>12.192740</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>min</th>
-      <td>7.000000</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>25%</th>
-      <td>25.000000</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>50%</th>
-      <td>31.000000</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>75%</th>
-      <td>43.000000</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>max</th>
-      <td>73.000000</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-### Step 16. Summarize only the occupation column
-
-
-```python
-users["occupation"].describe()
-```
-
-
-
-
-    count         943
-    unique         21
-    top       student
-    freq          196
-    Name: occupation, dtype: object
-
-
-
-### Step 17. What is the mean age of users?
-
-
-```python
-users["age"].mean()
-```
-
-
-
-
-    np.float64(34.05196182396607)
-
-
-
-### Step 18. What is the age with least occurrence?
-
-
-```python
-users["age"].value_counts().tail(1)
-```
-
-
-
-
-    age
-    73    1
-    Name: count, dtype: int64
-
-
-
-
-```python
-
-```
-# Exercise 2. - Filtering and Sorting Data
-
-Check out [Euro 12 Exercises Video Tutorial](https://youtu.be/iqk5d48Qisg) to watch a data scientist go through the exercises
-
-This time we are going to pull data directly from the internet.
-
-### Step 1. Import the necessary libraries
-
-
-```python
-import pandas as pd
-import numpy as np
-```
-
-### Step 2. Import the dataset from this [address](https://raw.githubusercontent.com/kflisikowsky/pandas_exercises/refs/heads/main/Euro_2012_stats_TEAM.csv). 
-
-### Step 3. Assign it to a variable called euro12.
-
-
-```python
-euro12 = pd.read_csv("https://raw.githubusercontent.com/kflisikowsky/pandas_exercises/refs/heads/main/Euro_2012_stats_TEAM.csv")
-```
-
-### Step 4. Select only the Goal column.
-
-
-```python
-euro12[["Goals"]]
-```
-
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
+   ],
+   "source": [
+    "# your solution goes here\n",
+    "cars >> mutate(mpg_per_cylinder = X.mpg / X.cylinders) >> head(3)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "\n",
+    "*transmute()*\n",
+    "\n",
+    "The transmute() function is a combination of a mutate and a selection of the created variables.\n",
+    "\n",
+    "### Exercise 12.\n",
+    "\n",
+    "Create a new column 'mpg_per_cylinder' in the cars DataFrame that is the result of dividing the 'mpg' column by the 'cylinders' column, and display only the new column."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>mpg_per</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>2.250</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>1.875</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>2.250</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "   mpg_per\n",
+       "0    2.250\n",
+       "1    1.875\n",
+       "2    2.250"
+      ]
+     },
+     "execution_count": 13,
+     "metadata": {},
+     "output_type": "execute_result"
     }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
+   ],
+   "source": [
+    "# your solution goes here\n",
+    "cars >> transmute(mpg_per = X.mpg / X.cylinders) >> head(3)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Grouping\n",
+    "\n",
+    "*group_by() and ungroup()*\n",
+    "\n",
+    "The group_by() function is used to group the DataFrame by one or more columns. This is useful for creating groups of rows that can be summarized or transformed together. The ungroup() function is used to remove the grouping.\n",
+    "\n",
+    "### Exercise 13.\n",
+    "\n",
+    "Group the cars DataFrame by the 'origin' column and calculate the lead of the 'mpg' column."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>origin</th>\n",
+       "      <th>lead</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>19</th>\n",
+       "      <td>europe</td>\n",
+       "      <td>25.0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>20</th>\n",
+       "      <td>europe</td>\n",
+       "      <td>24.0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>14</th>\n",
+       "      <td>japan</td>\n",
+       "      <td>27.0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>18</th>\n",
+       "      <td>japan</td>\n",
+       "      <td>27.0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>usa</td>\n",
+       "      <td>15.0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>usa</td>\n",
+       "      <td>18.0</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "    origin  lead\n",
+       "19  europe  25.0\n",
+       "20  europe  24.0\n",
+       "14   japan  27.0\n",
+       "18   japan  27.0\n",
+       "0      usa  15.0\n",
+       "1      usa  18.0"
+      ]
+     },
+     "execution_count": 14,
+     "metadata": {},
+     "output_type": "execute_result"
     }
-
-    .dataframe thead th {
-        text-align: right;
+   ],
+   "source": [
+    "# your solution goes here\n",
+    "cars >> group_by('origin') >> mutate(lead=lead(X.mpg)) >> head(2) >> select(X.origin, X.lead)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Reshaping\n",
+    "\n",
+    "*arrange()*\n",
+    "\n",
+    "The arrange() function is used to sort the DataFrame by one or more columns. This is useful for reordering the rows of the DataFrame.\n",
+    "\n",
+    "### Exercise 14.\n",
+    "\n",
+    "Sort the cars DataFrame by the 'mpg' column in descending order."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>mpg</th>\n",
+       "      <th>cylinders</th>\n",
+       "      <th>displacement</th>\n",
+       "      <th>horsepower</th>\n",
+       "      <th>weight</th>\n",
+       "      <th>acceleration</th>\n",
+       "      <th>model_year</th>\n",
+       "      <th>origin</th>\n",
+       "      <th>name</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>322</th>\n",
+       "      <td>46.6</td>\n",
+       "      <td>4</td>\n",
+       "      <td>86.0</td>\n",
+       "      <td>65.0</td>\n",
+       "      <td>2110</td>\n",
+       "      <td>17.9</td>\n",
+       "      <td>80</td>\n",
+       "      <td>japan</td>\n",
+       "      <td>mazda glc</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>329</th>\n",
+       "      <td>44.6</td>\n",
+       "      <td>4</td>\n",
+       "      <td>91.0</td>\n",
+       "      <td>67.0</td>\n",
+       "      <td>1850</td>\n",
+       "      <td>13.8</td>\n",
+       "      <td>80</td>\n",
+       "      <td>japan</td>\n",
+       "      <td>honda civic 1500 gl</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>325</th>\n",
+       "      <td>44.3</td>\n",
+       "      <td>4</td>\n",
+       "      <td>90.0</td>\n",
+       "      <td>48.0</td>\n",
+       "      <td>2085</td>\n",
+       "      <td>21.7</td>\n",
+       "      <td>80</td>\n",
+       "      <td>europe</td>\n",
+       "      <td>vw rabbit c (diesel)</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>394</th>\n",
+       "      <td>44.0</td>\n",
+       "      <td>4</td>\n",
+       "      <td>97.0</td>\n",
+       "      <td>52.0</td>\n",
+       "      <td>2130</td>\n",
+       "      <td>24.6</td>\n",
+       "      <td>82</td>\n",
+       "      <td>europe</td>\n",
+       "      <td>vw pickup</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>326</th>\n",
+       "      <td>43.4</td>\n",
+       "      <td>4</td>\n",
+       "      <td>90.0</td>\n",
+       "      <td>48.0</td>\n",
+       "      <td>2335</td>\n",
+       "      <td>23.7</td>\n",
+       "      <td>80</td>\n",
+       "      <td>europe</td>\n",
+       "      <td>vw dasher (diesel)</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "      mpg  cylinders  displacement  horsepower  weight  acceleration  \\\n",
+       "322  46.6          4          86.0        65.0    2110          17.9   \n",
+       "329  44.6          4          91.0        67.0    1850          13.8   \n",
+       "325  44.3          4          90.0        48.0    2085          21.7   \n",
+       "394  44.0          4          97.0        52.0    2130          24.6   \n",
+       "326  43.4          4          90.0        48.0    2335          23.7   \n",
+       "\n",
+       "     model_year  origin                  name  \n",
+       "322          80   japan             mazda glc  \n",
+       "329          80   japan   honda civic 1500 gl  \n",
+       "325          80  europe  vw rabbit c (diesel)  \n",
+       "394          82  europe             vw pickup  \n",
+       "326          80  europe    vw dasher (diesel)  "
+      ]
+     },
+     "execution_count": 15,
+     "metadata": {},
+     "output_type": "execute_result"
     }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Goals</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>4</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>4</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>4</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>5</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>3</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>10</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>5</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>6</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>2</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>2</td>
-    </tr>
-    <tr>
-      <th>10</th>
-      <td>6</td>
-    </tr>
-    <tr>
-      <th>11</th>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>12</th>
-      <td>5</td>
-    </tr>
-    <tr>
-      <th>13</th>
-      <td>12</td>
-    </tr>
-    <tr>
-      <th>14</th>
-      <td>5</td>
-    </tr>
-    <tr>
-      <th>15</th>
-      <td>2</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-### Step 5. How many team participated in the Euro2012?
-
-
-```python
-euro12["Team"].unique().size
-```
-
-
-
-
-    16
-
-
-
-### Step 6. What is the number of columns in the dataset?
-
-
-```python
-euro12.columns.size
-```
-
-
-
-
-    35
-
-
-
-### Step 7. View only the columns Team, Yellow Cards and Red Cards and assign them to a dataframe called discipline
-
-
-```python
-discipline = euro12[["Team", "Yellow Cards", "Red Cards"]]
-```
-
-### Step 8. Sort the teams by Red Cards, then to Yellow Cards
-
-
-```python
-discipline.sort_values(["Red Cards", "Yellow Cards"], ascending=[False, False])
-```
-
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
+   ],
+   "source": [
+    "# your solution goes here\n",
+    "cars >> arrange(X.mpg, ascending=False) >> head(5)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "\n",
+    "*rename()*\n",
+    "\n",
+    "The rename() function is used to rename columns in the DataFrame. It accepts keyword arguments of the form new_column_name = old_column_name.\n",
+    "\n",
+    "### Exercise 15.\n",
+    "\n",
+    "Rename the 'mpg' column to 'miles_per_gallon' in the cars DataFrame."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>miles_per_gallon</th>\n",
+       "      <th>cylinders</th>\n",
+       "      <th>displacement</th>\n",
+       "      <th>horsepower</th>\n",
+       "      <th>weight</th>\n",
+       "      <th>acceleration</th>\n",
+       "      <th>model_year</th>\n",
+       "      <th>origin</th>\n",
+       "      <th>name</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>18.0</td>\n",
+       "      <td>8</td>\n",
+       "      <td>307.0</td>\n",
+       "      <td>130.0</td>\n",
+       "      <td>3504</td>\n",
+       "      <td>12.0</td>\n",
+       "      <td>70</td>\n",
+       "      <td>usa</td>\n",
+       "      <td>chevrolet chevelle malibu</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>15.0</td>\n",
+       "      <td>8</td>\n",
+       "      <td>350.0</td>\n",
+       "      <td>165.0</td>\n",
+       "      <td>3693</td>\n",
+       "      <td>11.5</td>\n",
+       "      <td>70</td>\n",
+       "      <td>usa</td>\n",
+       "      <td>buick skylark 320</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>18.0</td>\n",
+       "      <td>8</td>\n",
+       "      <td>318.0</td>\n",
+       "      <td>150.0</td>\n",
+       "      <td>3436</td>\n",
+       "      <td>11.0</td>\n",
+       "      <td>70</td>\n",
+       "      <td>usa</td>\n",
+       "      <td>plymouth satellite</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "   miles_per_gallon  cylinders  displacement  horsepower  weight  \\\n",
+       "0              18.0          8         307.0       130.0    3504   \n",
+       "1              15.0          8         350.0       165.0    3693   \n",
+       "2              18.0          8         318.0       150.0    3436   \n",
+       "\n",
+       "   acceleration  model_year origin                       name  \n",
+       "0          12.0          70    usa  chevrolet chevelle malibu  \n",
+       "1          11.5          70    usa          buick skylark 320  \n",
+       "2          11.0          70    usa         plymouth satellite  "
+      ]
+     },
+     "execution_count": 16,
+     "metadata": {},
+     "output_type": "execute_result"
     }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
+   ],
+   "source": [
+    "# your solution goes here\n",
+    "cars >> rename(miles_per_gallon=X.mpg) >> head(3)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "\n",
+    "*gather()*\n",
+    "\n",
+    "The gather() function is used to reshape the DataFrame from wide to long format. It accepts keyword arguments of the form new_column_name = new_column_value, where new_column_value is a symbolic Series object.\n",
+    "\n",
+    "### Exercise 16.\n",
+    "\n",
+    "Reshape the cars DataFrame from wide to long format by gathering the columns 'mpg', 'horsepower', 'weight', 'acceleration', and 'displacement' into a new column 'variable' and their values into a new column 'value'."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 17,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>cylinders</th>\n",
+       "      <th>model_year</th>\n",
+       "      <th>origin</th>\n",
+       "      <th>name</th>\n",
+       "      <th>_ID</th>\n",
+       "      <th>variable</th>\n",
+       "      <th>value</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>8</td>\n",
+       "      <td>70</td>\n",
+       "      <td>usa</td>\n",
+       "      <td>chevrolet chevelle malibu</td>\n",
+       "      <td>0</td>\n",
+       "      <td>mpg</td>\n",
+       "      <td>18.0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>8</td>\n",
+       "      <td>70</td>\n",
+       "      <td>usa</td>\n",
+       "      <td>buick skylark 320</td>\n",
+       "      <td>1</td>\n",
+       "      <td>mpg</td>\n",
+       "      <td>15.0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>8</td>\n",
+       "      <td>70</td>\n",
+       "      <td>usa</td>\n",
+       "      <td>plymouth satellite</td>\n",
+       "      <td>2</td>\n",
+       "      <td>mpg</td>\n",
+       "      <td>18.0</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "   cylinders  model_year origin                       name  _ID variable  \\\n",
+       "0          8          70    usa  chevrolet chevelle malibu    0      mpg   \n",
+       "1          8          70    usa          buick skylark 320    1      mpg   \n",
+       "2          8          70    usa         plymouth satellite    2      mpg   \n",
+       "\n",
+       "   value  \n",
+       "0   18.0  \n",
+       "1   15.0  \n",
+       "2   18.0  "
+      ]
+     },
+     "execution_count": 17,
+     "metadata": {},
+     "output_type": "execute_result"
     }
-
-    .dataframe thead th {
-        text-align: right;
+   ],
+   "source": [
+    "# your solution goes here\n",
+    "cars2 = cars >> gather('variable', 'value', [X.mpg, X.horsepower, X.weight, X.acceleration, X.displacement], add_id=True)\n",
+    "cars2 >> head(3)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "\n",
+    "*spread()*\n",
+    "\n",
+    "Likewise, you can transform a \"long\" DataFrame into a \"wide\" format with the spread(key, values) function. Converting the previously created elongated DataFrame for example would be done like so.\n",
+    "\n",
+    "### Exercise 17.\n",
+    "\n",
+    "Reshape the cars DataFrame from long to wide format by spreading the 'variable' column into columns and their values into the 'value' column."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 18,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>cylinders</th>\n",
+       "      <th>model_year</th>\n",
+       "      <th>origin</th>\n",
+       "      <th>name</th>\n",
+       "      <th>_ID</th>\n",
+       "      <th>acceleration</th>\n",
+       "      <th>displacement</th>\n",
+       "      <th>horsepower</th>\n",
+       "      <th>mpg</th>\n",
+       "      <th>weight</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>3</td>\n",
+       "      <td>72</td>\n",
+       "      <td>japan</td>\n",
+       "      <td>mazda rx2 coupe</td>\n",
+       "      <td>71</td>\n",
+       "      <td>13.5</td>\n",
+       "      <td>70.0</td>\n",
+       "      <td>97.0</td>\n",
+       "      <td>19.0</td>\n",
+       "      <td>2330.0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>3</td>\n",
+       "      <td>73</td>\n",
+       "      <td>japan</td>\n",
+       "      <td>maxda rx3</td>\n",
+       "      <td>111</td>\n",
+       "      <td>13.5</td>\n",
+       "      <td>70.0</td>\n",
+       "      <td>90.0</td>\n",
+       "      <td>18.0</td>\n",
+       "      <td>2124.0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>3</td>\n",
+       "      <td>77</td>\n",
+       "      <td>japan</td>\n",
+       "      <td>mazda rx-4</td>\n",
+       "      <td>243</td>\n",
+       "      <td>13.5</td>\n",
+       "      <td>80.0</td>\n",
+       "      <td>110.0</td>\n",
+       "      <td>21.5</td>\n",
+       "      <td>2720.0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>3</td>\n",
+       "      <td>80</td>\n",
+       "      <td>japan</td>\n",
+       "      <td>mazda rx-7 gs</td>\n",
+       "      <td>334</td>\n",
+       "      <td>12.5</td>\n",
+       "      <td>70.0</td>\n",
+       "      <td>100.0</td>\n",
+       "      <td>23.7</td>\n",
+       "      <td>2420.0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>4</td>\n",
+       "      <td>70</td>\n",
+       "      <td>europe</td>\n",
+       "      <td>audi 100 ls</td>\n",
+       "      <td>21</td>\n",
+       "      <td>14.5</td>\n",
+       "      <td>107.0</td>\n",
+       "      <td>90.0</td>\n",
+       "      <td>24.0</td>\n",
+       "      <td>2430.0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>...</th>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>393</th>\n",
+       "      <td>8</td>\n",
+       "      <td>79</td>\n",
+       "      <td>usa</td>\n",
+       "      <td>ford country squire (sw)</td>\n",
+       "      <td>290</td>\n",
+       "      <td>14.3</td>\n",
+       "      <td>351.0</td>\n",
+       "      <td>142.0</td>\n",
+       "      <td>15.5</td>\n",
+       "      <td>4054.0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>394</th>\n",
+       "      <td>8</td>\n",
+       "      <td>79</td>\n",
+       "      <td>usa</td>\n",
+       "      <td>ford ltd landau</td>\n",
+       "      <td>286</td>\n",
+       "      <td>13.4</td>\n",
+       "      <td>302.0</td>\n",
+       "      <td>129.0</td>\n",
+       "      <td>17.6</td>\n",
+       "      <td>3725.0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>395</th>\n",
+       "      <td>8</td>\n",
+       "      <td>79</td>\n",
+       "      <td>usa</td>\n",
+       "      <td>mercury grand marquis</td>\n",
+       "      <td>287</td>\n",
+       "      <td>13.2</td>\n",
+       "      <td>351.0</td>\n",
+       "      <td>138.0</td>\n",
+       "      <td>16.5</td>\n",
+       "      <td>3955.0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>396</th>\n",
+       "      <td>8</td>\n",
+       "      <td>79</td>\n",
+       "      <td>usa</td>\n",
+       "      <td>oldsmobile cutlass salon brougham</td>\n",
+       "      <td>300</td>\n",
+       "      <td>22.2</td>\n",
+       "      <td>260.0</td>\n",
+       "      <td>90.0</td>\n",
+       "      <td>23.9</td>\n",
+       "      <td>3420.0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>397</th>\n",
+       "      <td>8</td>\n",
+       "      <td>81</td>\n",
+       "      <td>usa</td>\n",
+       "      <td>oldsmobile cutlass ls</td>\n",
+       "      <td>364</td>\n",
+       "      <td>19.0</td>\n",
+       "      <td>350.0</td>\n",
+       "      <td>105.0</td>\n",
+       "      <td>26.6</td>\n",
+       "      <td>3725.0</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "<p>398 rows × 10 columns</p>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "     cylinders  model_year  origin                               name  _ID  \\\n",
+       "0            3          72   japan                    mazda rx2 coupe   71   \n",
+       "1            3          73   japan                          maxda rx3  111   \n",
+       "2            3          77   japan                         mazda rx-4  243   \n",
+       "3            3          80   japan                      mazda rx-7 gs  334   \n",
+       "4            4          70  europe                        audi 100 ls   21   \n",
+       "..         ...         ...     ...                                ...  ...   \n",
+       "393          8          79     usa           ford country squire (sw)  290   \n",
+       "394          8          79     usa                    ford ltd landau  286   \n",
+       "395          8          79     usa              mercury grand marquis  287   \n",
+       "396          8          79     usa  oldsmobile cutlass salon brougham  300   \n",
+       "397          8          81     usa              oldsmobile cutlass ls  364   \n",
+       "\n",
+       "     acceleration  displacement  horsepower   mpg  weight  \n",
+       "0            13.5          70.0        97.0  19.0  2330.0  \n",
+       "1            13.5          70.0        90.0  18.0  2124.0  \n",
+       "2            13.5          80.0       110.0  21.5  2720.0  \n",
+       "3            12.5          70.0       100.0  23.7  2420.0  \n",
+       "4            14.5         107.0        90.0  24.0  2430.0  \n",
+       "..            ...           ...         ...   ...     ...  \n",
+       "393          14.3         351.0       142.0  15.5  4054.0  \n",
+       "394          13.4         302.0       129.0  17.6  3725.0  \n",
+       "395          13.2         351.0       138.0  16.5  3955.0  \n",
+       "396          22.2         260.0        90.0  23.9  3420.0  \n",
+       "397          19.0         350.0       105.0  26.6  3725.0  \n",
+       "\n",
+       "[398 rows x 10 columns]"
+      ]
+     },
+     "execution_count": 18,
+     "metadata": {},
+     "output_type": "execute_result"
     }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Team</th>
-      <th>Yellow Cards</th>
-      <th>Red Cards</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>6</th>
-      <td>Greece</td>
-      <td>9</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>Poland</td>
-      <td>7</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>11</th>
-      <td>Republic of Ireland</td>
-      <td>6</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>Italy</td>
-      <td>16</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>10</th>
-      <td>Portugal</td>
-      <td>12</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>13</th>
-      <td>Spain</td>
-      <td>11</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>0</th>
-      <td>Croatia</td>
-      <td>9</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>Czech Republic</td>
-      <td>7</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>14</th>
-      <td>Sweden</td>
-      <td>7</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>France</td>
-      <td>6</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>12</th>
-      <td>Russia</td>
-      <td>6</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>England</td>
-      <td>5</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>Netherlands</td>
-      <td>5</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>15</th>
-      <td>Ukraine</td>
-      <td>5</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>Denmark</td>
-      <td>4</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>Germany</td>
-      <td>4</td>
-      <td>0</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-### Step 9. Calculate the mean Yellow Cards given per Team
-
-
-```python
-discipline.groupby("Team")["Yellow Cards"].mean()
-```
-
-
-
-
-    Team
-    Croatia                 9.0
-    Czech Republic          7.0
-    Denmark                 4.0
-    England                 5.0
-    France                  6.0
-    Germany                 4.0
-    Greece                  9.0
-    Italy                  16.0
-    Netherlands             5.0
-    Poland                  7.0
-    Portugal               12.0
-    Republic of Ireland     6.0
-    Russia                  6.0
-    Spain                  11.0
-    Sweden                  7.0
-    Ukraine                 5.0
-    Name: Yellow Cards, dtype: float64
-
-
-
-### Step 10. Filter teams that scored more than 6 goals
-
-
-```python
-euro12[euro12["Goals"] > 6]
-```
-
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
+   ],
+   "source": [
+    "# your solution goes here\n",
+    "cars2 >> spread(X.variable, X.value)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "\n",
+    "## Summarization\n",
+    "\n",
+    "*summarize()*\n",
+    "\n",
+    "The summarize() function is used to calculate summary statistics for groups of rows. It accepts keyword arguments of the form new_column_name = new_column_value, where new_column_value is a symbolic Series object.\n",
+    "\n",
+    "### Exercise 18.\n",
+    "\n",
+    "Calculate the mean 'mpg' for each group of 'origin' in the cars DataFrame."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 19,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>origin</th>\n",
+       "      <th>mean</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>europe</td>\n",
+       "      <td>27.891429</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>japan</td>\n",
+       "      <td>30.450633</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>usa</td>\n",
+       "      <td>20.083534</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "   origin       mean\n",
+       "0  europe  27.891429\n",
+       "1   japan  30.450633\n",
+       "2     usa  20.083534"
+      ]
+     },
+     "execution_count": 19,
+     "metadata": {},
+     "output_type": "execute_result"
     }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
+   ],
+   "source": [
+    "# your solution goes here\n",
+    "cars >> group_by('origin') >> summarize(mean=mean(X.mpg))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "\n",
+    "*summarize_each()*\n",
+    "\n",
+    "The summarize_each() function is used to calculate summary statistics for groups of rows. It accepts keyword arguments of the form new_column_name = new_column_value, where new_column_value is a symbolic Series object.\n",
+    "\n",
+    "### Exercise 19.\n",
+    "\n",
+    "Calculate the mean 'mpg' and 'horsepower' for each group of 'origin' in the cars DataFrame."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 20,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>origin</th>\n",
+       "      <th>mpg_mean</th>\n",
+       "      <th>horsepower_mean</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>europe</td>\n",
+       "      <td>27.891429</td>\n",
+       "      <td>80.558824</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>japan</td>\n",
+       "      <td>30.450633</td>\n",
+       "      <td>79.835443</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>usa</td>\n",
+       "      <td>20.083534</td>\n",
+       "      <td>119.048980</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "   origin   mpg_mean  horsepower_mean\n",
+       "0  europe  27.891429        80.558824\n",
+       "1   japan  30.450633        79.835443\n",
+       "2     usa  20.083534       119.048980"
+      ]
+     },
+     "execution_count": 20,
+     "metadata": {},
+     "output_type": "execute_result"
     }
-
-    .dataframe thead th {
-        text-align: right;
+   ],
+   "source": [
+    "# your solution goes here\n",
+    "cars >> group_by('origin') >> summarize_each([mean], X.mpg, X.horsepower)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "\n",
+    "*summarize() can of course be used with groupings as well.*\n",
+    "\n",
+    "### Exercise 20.\n",
+    "\n",
+    "Calculate the mean 'mpg' for each group of 'origin' and 'model_year' in the cars DataFrame."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 23,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>model_year</th>\n",
+       "      <th>origin</th>\n",
+       "      <th>mpg_mean</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>70</td>\n",
+       "      <td>europe</td>\n",
+       "      <td>25.200000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>71</td>\n",
+       "      <td>europe</td>\n",
+       "      <td>28.750000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>72</td>\n",
+       "      <td>europe</td>\n",
+       "      <td>22.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>73</td>\n",
+       "      <td>europe</td>\n",
+       "      <td>24.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>74</td>\n",
+       "      <td>europe</td>\n",
+       "      <td>27.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>5</th>\n",
+       "      <td>75</td>\n",
+       "      <td>europe</td>\n",
+       "      <td>24.500000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>6</th>\n",
+       "      <td>76</td>\n",
+       "      <td>europe</td>\n",
+       "      <td>24.250000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>7</th>\n",
+       "      <td>77</td>\n",
+       "      <td>europe</td>\n",
+       "      <td>29.250000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>8</th>\n",
+       "      <td>78</td>\n",
+       "      <td>europe</td>\n",
+       "      <td>24.950000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>9</th>\n",
+       "      <td>79</td>\n",
+       "      <td>europe</td>\n",
+       "      <td>30.450000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>10</th>\n",
+       "      <td>80</td>\n",
+       "      <td>europe</td>\n",
+       "      <td>37.288889</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>11</th>\n",
+       "      <td>81</td>\n",
+       "      <td>europe</td>\n",
+       "      <td>31.575000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>12</th>\n",
+       "      <td>82</td>\n",
+       "      <td>europe</td>\n",
+       "      <td>40.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>13</th>\n",
+       "      <td>70</td>\n",
+       "      <td>japan</td>\n",
+       "      <td>25.500000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>14</th>\n",
+       "      <td>71</td>\n",
+       "      <td>japan</td>\n",
+       "      <td>29.500000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>15</th>\n",
+       "      <td>72</td>\n",
+       "      <td>japan</td>\n",
+       "      <td>24.200000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>16</th>\n",
+       "      <td>73</td>\n",
+       "      <td>japan</td>\n",
+       "      <td>20.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>17</th>\n",
+       "      <td>74</td>\n",
+       "      <td>japan</td>\n",
+       "      <td>29.333333</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>18</th>\n",
+       "      <td>75</td>\n",
+       "      <td>japan</td>\n",
+       "      <td>27.500000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>19</th>\n",
+       "      <td>76</td>\n",
+       "      <td>japan</td>\n",
+       "      <td>28.000000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>20</th>\n",
+       "      <td>77</td>\n",
+       "      <td>japan</td>\n",
+       "      <td>27.416667</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>21</th>\n",
+       "      <td>78</td>\n",
+       "      <td>japan</td>\n",
+       "      <td>29.687500</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>22</th>\n",
+       "      <td>79</td>\n",
+       "      <td>japan</td>\n",
+       "      <td>32.950000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>23</th>\n",
+       "      <td>80</td>\n",
+       "      <td>japan</td>\n",
+       "      <td>35.400000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>24</th>\n",
+       "      <td>81</td>\n",
+       "      <td>japan</td>\n",
+       "      <td>32.958333</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>25</th>\n",
+       "      <td>82</td>\n",
+       "      <td>japan</td>\n",
+       "      <td>34.888889</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>26</th>\n",
+       "      <td>70</td>\n",
+       "      <td>usa</td>\n",
+       "      <td>15.272727</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>27</th>\n",
+       "      <td>71</td>\n",
+       "      <td>usa</td>\n",
+       "      <td>18.100000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>28</th>\n",
+       "      <td>72</td>\n",
+       "      <td>usa</td>\n",
+       "      <td>16.277778</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>29</th>\n",
+       "      <td>73</td>\n",
+       "      <td>usa</td>\n",
+       "      <td>15.034483</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>30</th>\n",
+       "      <td>74</td>\n",
+       "      <td>usa</td>\n",
+       "      <td>18.333333</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>31</th>\n",
+       "      <td>75</td>\n",
+       "      <td>usa</td>\n",
+       "      <td>17.550000</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>32</th>\n",
+       "      <td>76</td>\n",
+       "      <td>usa</td>\n",
+       "      <td>19.431818</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>33</th>\n",
+       "      <td>77</td>\n",
+       "      <td>usa</td>\n",
+       "      <td>20.722222</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>34</th>\n",
+       "      <td>78</td>\n",
+       "      <td>usa</td>\n",
+       "      <td>21.772727</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>35</th>\n",
+       "      <td>79</td>\n",
+       "      <td>usa</td>\n",
+       "      <td>23.478261</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>36</th>\n",
+       "      <td>80</td>\n",
+       "      <td>usa</td>\n",
+       "      <td>25.914286</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>37</th>\n",
+       "      <td>81</td>\n",
+       "      <td>usa</td>\n",
+       "      <td>27.530769</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>38</th>\n",
+       "      <td>82</td>\n",
+       "      <td>usa</td>\n",
+       "      <td>29.450000</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "    model_year  origin   mpg_mean\n",
+       "0           70  europe  25.200000\n",
+       "1           71  europe  28.750000\n",
+       "2           72  europe  22.000000\n",
+       "3           73  europe  24.000000\n",
+       "4           74  europe  27.000000\n",
+       "5           75  europe  24.500000\n",
+       "6           76  europe  24.250000\n",
+       "7           77  europe  29.250000\n",
+       "8           78  europe  24.950000\n",
+       "9           79  europe  30.450000\n",
+       "10          80  europe  37.288889\n",
+       "11          81  europe  31.575000\n",
+       "12          82  europe  40.000000\n",
+       "13          70   japan  25.500000\n",
+       "14          71   japan  29.500000\n",
+       "15          72   japan  24.200000\n",
+       "16          73   japan  20.000000\n",
+       "17          74   japan  29.333333\n",
+       "18          75   japan  27.500000\n",
+       "19          76   japan  28.000000\n",
+       "20          77   japan  27.416667\n",
+       "21          78   japan  29.687500\n",
+       "22          79   japan  32.950000\n",
+       "23          80   japan  35.400000\n",
+       "24          81   japan  32.958333\n",
+       "25          82   japan  34.888889\n",
+       "26          70     usa  15.272727\n",
+       "27          71     usa  18.100000\n",
+       "28          72     usa  16.277778\n",
+       "29          73     usa  15.034483\n",
+       "30          74     usa  18.333333\n",
+       "31          75     usa  17.550000\n",
+       "32          76     usa  19.431818\n",
+       "33          77     usa  20.722222\n",
+       "34          78     usa  21.772727\n",
+       "35          79     usa  23.478261\n",
+       "36          80     usa  25.914286\n",
+       "37          81     usa  27.530769\n",
+       "38          82     usa  29.450000"
+      ]
+     },
+     "execution_count": 23,
+     "metadata": {},
+     "output_type": "execute_result"
     }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Team</th>
-      <th>Goals</th>
-      <th>Shots on target</th>
-      <th>Shots off target</th>
-      <th>Shooting Accuracy</th>
-      <th>% Goals-to-shots</th>
-      <th>Total shots (inc. Blocked)</th>
-      <th>Hit Woodwork</th>
-      <th>Penalty goals</th>
-      <th>Penalties not scored</th>
-      <th>...</th>
-      <th>Saves made</th>
-      <th>Saves-to-shots ratio</th>
-      <th>Fouls Won</th>
-      <th>Fouls Conceded</th>
-      <th>Offsides</th>
-      <th>Yellow Cards</th>
-      <th>Red Cards</th>
-      <th>Subs on</th>
-      <th>Subs off</th>
-      <th>Players Used</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>5</th>
-      <td>Germany</td>
-      <td>10</td>
-      <td>32</td>
-      <td>32</td>
-      <td>47.8%</td>
-      <td>15.6%</td>
-      <td>80</td>
-      <td>2</td>
-      <td>1</td>
-      <td>0</td>
-      <td>...</td>
-      <td>10</td>
-      <td>62.6%</td>
-      <td>63</td>
-      <td>49</td>
-      <td>12</td>
-      <td>4</td>
-      <td>0</td>
-      <td>15</td>
-      <td>15</td>
-      <td>17</td>
-    </tr>
-    <tr>
-      <th>13</th>
-      <td>Spain</td>
-      <td>12</td>
-      <td>42</td>
-      <td>33</td>
-      <td>55.9%</td>
-      <td>16.0%</td>
-      <td>100</td>
-      <td>0</td>
-      <td>1</td>
-      <td>0</td>
-      <td>...</td>
-      <td>15</td>
-      <td>93.8%</td>
-      <td>102</td>
-      <td>83</td>
-      <td>19</td>
-      <td>11</td>
-      <td>0</td>
-      <td>17</td>
-      <td>17</td>
-      <td>18</td>
-    </tr>
-  </tbody>
-</table>
-<p>2 rows × 35 columns</p>
-</div>
-
-
-
-### Step 11. Select the teams that start with G
-
-
-```python
-euro12[euro12["Team"].str.startswith("G")]
-```
-
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Team</th>
-      <th>Goals</th>
-      <th>Shots on target</th>
-      <th>Shots off target</th>
-      <th>Shooting Accuracy</th>
-      <th>% Goals-to-shots</th>
-      <th>Total shots (inc. Blocked)</th>
-      <th>Hit Woodwork</th>
-      <th>Penalty goals</th>
-      <th>Penalties not scored</th>
-      <th>...</th>
-      <th>Saves made</th>
-      <th>Saves-to-shots ratio</th>
-      <th>Fouls Won</th>
-      <th>Fouls Conceded</th>
-      <th>Offsides</th>
-      <th>Yellow Cards</th>
-      <th>Red Cards</th>
-      <th>Subs on</th>
-      <th>Subs off</th>
-      <th>Players Used</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>5</th>
-      <td>Germany</td>
-      <td>10</td>
-      <td>32</td>
-      <td>32</td>
-      <td>47.8%</td>
-      <td>15.6%</td>
-      <td>80</td>
-      <td>2</td>
-      <td>1</td>
-      <td>0</td>
-      <td>...</td>
-      <td>10</td>
-      <td>62.6%</td>
-      <td>63</td>
-      <td>49</td>
-      <td>12</td>
-      <td>4</td>
-      <td>0</td>
-      <td>15</td>
-      <td>15</td>
-      <td>17</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>Greece</td>
-      <td>5</td>
-      <td>8</td>
-      <td>18</td>
-      <td>30.7%</td>
-      <td>19.2%</td>
-      <td>32</td>
-      <td>1</td>
-      <td>1</td>
-      <td>1</td>
-      <td>...</td>
-      <td>13</td>
-      <td>65.1%</td>
-      <td>67</td>
-      <td>48</td>
-      <td>12</td>
-      <td>9</td>
-      <td>1</td>
-      <td>12</td>
-      <td>12</td>
-      <td>20</td>
-    </tr>
-  </tbody>
-</table>
-<p>2 rows × 35 columns</p>
-</div>
-
-
-
-### Step 12. Select the first 7 columns
-
-
-```python
-euro12[euro12.columns[:7]]
-```
-
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Team</th>
-      <th>Goals</th>
-      <th>Shots on target</th>
-      <th>Shots off target</th>
-      <th>Shooting Accuracy</th>
-      <th>% Goals-to-shots</th>
-      <th>Total shots (inc. Blocked)</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>Croatia</td>
-      <td>4</td>
-      <td>13</td>
-      <td>12</td>
-      <td>51.9%</td>
-      <td>16.0%</td>
-      <td>32</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>Czech Republic</td>
-      <td>4</td>
-      <td>13</td>
-      <td>18</td>
-      <td>41.9%</td>
-      <td>12.9%</td>
-      <td>39</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>Denmark</td>
-      <td>4</td>
-      <td>10</td>
-      <td>10</td>
-      <td>50.0%</td>
-      <td>20.0%</td>
-      <td>27</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>England</td>
-      <td>5</td>
-      <td>11</td>
-      <td>18</td>
-      <td>50.0%</td>
-      <td>17.2%</td>
-      <td>40</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>France</td>
-      <td>3</td>
-      <td>22</td>
-      <td>24</td>
-      <td>37.9%</td>
-      <td>6.5%</td>
-      <td>65</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>Germany</td>
-      <td>10</td>
-      <td>32</td>
-      <td>32</td>
-      <td>47.8%</td>
-      <td>15.6%</td>
-      <td>80</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>Greece</td>
-      <td>5</td>
-      <td>8</td>
-      <td>18</td>
-      <td>30.7%</td>
-      <td>19.2%</td>
-      <td>32</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>Italy</td>
-      <td>6</td>
-      <td>34</td>
-      <td>45</td>
-      <td>43.0%</td>
-      <td>7.5%</td>
-      <td>110</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>Netherlands</td>
-      <td>2</td>
-      <td>12</td>
-      <td>36</td>
-      <td>25.0%</td>
-      <td>4.1%</td>
-      <td>60</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>Poland</td>
-      <td>2</td>
-      <td>15</td>
-      <td>23</td>
-      <td>39.4%</td>
-      <td>5.2%</td>
-      <td>48</td>
-    </tr>
-    <tr>
-      <th>10</th>
-      <td>Portugal</td>
-      <td>6</td>
-      <td>22</td>
-      <td>42</td>
-      <td>34.3%</td>
-      <td>9.3%</td>
-      <td>82</td>
-    </tr>
-    <tr>
-      <th>11</th>
-      <td>Republic of Ireland</td>
-      <td>1</td>
-      <td>7</td>
-      <td>12</td>
-      <td>36.8%</td>
-      <td>5.2%</td>
-      <td>28</td>
-    </tr>
-    <tr>
-      <th>12</th>
-      <td>Russia</td>
-      <td>5</td>
-      <td>9</td>
-      <td>31</td>
-      <td>22.5%</td>
-      <td>12.5%</td>
-      <td>59</td>
-    </tr>
-    <tr>
-      <th>13</th>
-      <td>Spain</td>
-      <td>12</td>
-      <td>42</td>
-      <td>33</td>
-      <td>55.9%</td>
-      <td>16.0%</td>
-      <td>100</td>
-    </tr>
-    <tr>
-      <th>14</th>
-      <td>Sweden</td>
-      <td>5</td>
-      <td>17</td>
-      <td>19</td>
-      <td>47.2%</td>
-      <td>13.8%</td>
-      <td>39</td>
-    </tr>
-    <tr>
-      <th>15</th>
-      <td>Ukraine</td>
-      <td>2</td>
-      <td>7</td>
-      <td>26</td>
-      <td>21.2%</td>
-      <td>6.0%</td>
-      <td>38</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-### Step 13. Select all columns except the last 3.
-
-
-```python
-euro12[euro12.columns[:-3]]
-```
-
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Team</th>
-      <th>Goals</th>
-      <th>Shots on target</th>
-      <th>Shots off target</th>
-      <th>Shooting Accuracy</th>
-      <th>% Goals-to-shots</th>
-      <th>Total shots (inc. Blocked)</th>
-      <th>Hit Woodwork</th>
-      <th>Penalty goals</th>
-      <th>Penalties not scored</th>
-      <th>...</th>
-      <th>Clean Sheets</th>
-      <th>Blocks</th>
-      <th>Goals conceded</th>
-      <th>Saves made</th>
-      <th>Saves-to-shots ratio</th>
-      <th>Fouls Won</th>
-      <th>Fouls Conceded</th>
-      <th>Offsides</th>
-      <th>Yellow Cards</th>
-      <th>Red Cards</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>Croatia</td>
-      <td>4</td>
-      <td>13</td>
-      <td>12</td>
-      <td>51.9%</td>
-      <td>16.0%</td>
-      <td>32</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>...</td>
-      <td>0</td>
-      <td>10</td>
-      <td>3</td>
-      <td>13</td>
-      <td>81.3%</td>
-      <td>41</td>
-      <td>62</td>
-      <td>2</td>
-      <td>9</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>Czech Republic</td>
-      <td>4</td>
-      <td>13</td>
-      <td>18</td>
-      <td>41.9%</td>
-      <td>12.9%</td>
-      <td>39</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>...</td>
-      <td>1</td>
-      <td>10</td>
-      <td>6</td>
-      <td>9</td>
-      <td>60.1%</td>
-      <td>53</td>
-      <td>73</td>
-      <td>8</td>
-      <td>7</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>Denmark</td>
-      <td>4</td>
-      <td>10</td>
-      <td>10</td>
-      <td>50.0%</td>
-      <td>20.0%</td>
-      <td>27</td>
-      <td>1</td>
-      <td>0</td>
-      <td>0</td>
-      <td>...</td>
-      <td>1</td>
-      <td>10</td>
-      <td>5</td>
-      <td>10</td>
-      <td>66.7%</td>
-      <td>25</td>
-      <td>38</td>
-      <td>8</td>
-      <td>4</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>England</td>
-      <td>5</td>
-      <td>11</td>
-      <td>18</td>
-      <td>50.0%</td>
-      <td>17.2%</td>
-      <td>40</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>...</td>
-      <td>2</td>
-      <td>29</td>
-      <td>3</td>
-      <td>22</td>
-      <td>88.1%</td>
-      <td>43</td>
-      <td>45</td>
-      <td>6</td>
-      <td>5</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>France</td>
-      <td>3</td>
-      <td>22</td>
-      <td>24</td>
-      <td>37.9%</td>
-      <td>6.5%</td>
-      <td>65</td>
-      <td>1</td>
-      <td>0</td>
-      <td>0</td>
-      <td>...</td>
-      <td>1</td>
-      <td>7</td>
-      <td>5</td>
-      <td>6</td>
-      <td>54.6%</td>
-      <td>36</td>
-      <td>51</td>
-      <td>5</td>
-      <td>6</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>Germany</td>
-      <td>10</td>
-      <td>32</td>
-      <td>32</td>
-      <td>47.8%</td>
-      <td>15.6%</td>
-      <td>80</td>
-      <td>2</td>
-      <td>1</td>
-      <td>0</td>
-      <td>...</td>
-      <td>1</td>
-      <td>11</td>
-      <td>6</td>
-      <td>10</td>
-      <td>62.6%</td>
-      <td>63</td>
-      <td>49</td>
-      <td>12</td>
-      <td>4</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>Greece</td>
-      <td>5</td>
-      <td>8</td>
-      <td>18</td>
-      <td>30.7%</td>
-      <td>19.2%</td>
-      <td>32</td>
-      <td>1</td>
-      <td>1</td>
-      <td>1</td>
-      <td>...</td>
-      <td>1</td>
-      <td>23</td>
-      <td>7</td>
-      <td>13</td>
-      <td>65.1%</td>
-      <td>67</td>
-      <td>48</td>
-      <td>12</td>
-      <td>9</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>Italy</td>
-      <td>6</td>
-      <td>34</td>
-      <td>45</td>
-      <td>43.0%</td>
-      <td>7.5%</td>
-      <td>110</td>
-      <td>2</td>
-      <td>0</td>
-      <td>0</td>
-      <td>...</td>
-      <td>2</td>
-      <td>18</td>
-      <td>7</td>
-      <td>20</td>
-      <td>74.1%</td>
-      <td>101</td>
-      <td>89</td>
-      <td>16</td>
-      <td>16</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>Netherlands</td>
-      <td>2</td>
-      <td>12</td>
-      <td>36</td>
-      <td>25.0%</td>
-      <td>4.1%</td>
-      <td>60</td>
-      <td>2</td>
-      <td>0</td>
-      <td>0</td>
-      <td>...</td>
-      <td>0</td>
-      <td>9</td>
-      <td>5</td>
-      <td>12</td>
-      <td>70.6%</td>
-      <td>35</td>
-      <td>30</td>
-      <td>3</td>
-      <td>5</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>Poland</td>
-      <td>2</td>
-      <td>15</td>
-      <td>23</td>
-      <td>39.4%</td>
-      <td>5.2%</td>
-      <td>48</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>...</td>
-      <td>0</td>
-      <td>8</td>
-      <td>3</td>
-      <td>6</td>
-      <td>66.7%</td>
-      <td>48</td>
-      <td>56</td>
-      <td>3</td>
-      <td>7</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>10</th>
-      <td>Portugal</td>
-      <td>6</td>
-      <td>22</td>
-      <td>42</td>
-      <td>34.3%</td>
-      <td>9.3%</td>
-      <td>82</td>
-      <td>6</td>
-      <td>0</td>
-      <td>0</td>
-      <td>...</td>
-      <td>2</td>
-      <td>11</td>
-      <td>4</td>
-      <td>10</td>
-      <td>71.5%</td>
-      <td>73</td>
-      <td>90</td>
-      <td>10</td>
-      <td>12</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>11</th>
-      <td>Republic of Ireland</td>
-      <td>1</td>
-      <td>7</td>
-      <td>12</td>
-      <td>36.8%</td>
-      <td>5.2%</td>
-      <td>28</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>...</td>
-      <td>0</td>
-      <td>23</td>
-      <td>9</td>
-      <td>17</td>
-      <td>65.4%</td>
-      <td>43</td>
-      <td>51</td>
-      <td>11</td>
-      <td>6</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>12</th>
-      <td>Russia</td>
-      <td>5</td>
-      <td>9</td>
-      <td>31</td>
-      <td>22.5%</td>
-      <td>12.5%</td>
-      <td>59</td>
-      <td>2</td>
-      <td>0</td>
-      <td>0</td>
-      <td>...</td>
-      <td>0</td>
-      <td>8</td>
-      <td>3</td>
-      <td>10</td>
-      <td>77.0%</td>
-      <td>34</td>
-      <td>43</td>
-      <td>4</td>
-      <td>6</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>13</th>
-      <td>Spain</td>
-      <td>12</td>
-      <td>42</td>
-      <td>33</td>
-      <td>55.9%</td>
-      <td>16.0%</td>
-      <td>100</td>
-      <td>0</td>
-      <td>1</td>
-      <td>0</td>
-      <td>...</td>
-      <td>5</td>
-      <td>8</td>
-      <td>1</td>
-      <td>15</td>
-      <td>93.8%</td>
-      <td>102</td>
-      <td>83</td>
-      <td>19</td>
-      <td>11</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>14</th>
-      <td>Sweden</td>
-      <td>5</td>
-      <td>17</td>
-      <td>19</td>
-      <td>47.2%</td>
-      <td>13.8%</td>
-      <td>39</td>
-      <td>3</td>
-      <td>0</td>
-      <td>0</td>
-      <td>...</td>
-      <td>1</td>
-      <td>12</td>
-      <td>5</td>
-      <td>8</td>
-      <td>61.6%</td>
-      <td>35</td>
-      <td>51</td>
-      <td>7</td>
-      <td>7</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>15</th>
-      <td>Ukraine</td>
-      <td>2</td>
-      <td>7</td>
-      <td>26</td>
-      <td>21.2%</td>
-      <td>6.0%</td>
-      <td>38</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>...</td>
-      <td>0</td>
-      <td>4</td>
-      <td>4</td>
-      <td>13</td>
-      <td>76.5%</td>
-      <td>48</td>
-      <td>31</td>
-      <td>4</td>
-      <td>5</td>
-      <td>0</td>
-    </tr>
-  </tbody>
-</table>
-<p>16 rows × 32 columns</p>
-</div>
-
-
-
-### Step 14. Present only the Shooting Accuracy from England, Italy and Russia
-
-### 
-
-
-```python
-euro12[euro12["Team"].isin(["England", "Italy", "Russia"])][["Team", "Shooting Accuracy"]]
-```
-
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Team</th>
-      <th>Shooting Accuracy</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>3</th>
-      <td>England</td>
-      <td>50.0%</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>Italy</td>
-      <td>43.0%</td>
-    </tr>
-    <tr>
-      <th>12</th>
-      <td>Russia</td>
-      <td>22.5%</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-
-```python
-
-```
-# Exercise 3. - GroupBy
-
-### Introduction:
-
-GroupBy can be summarized as Split-Apply-Combine.
-
-Special thanks to: https://github.com/justmarkham for sharing the dataset and materials.
-
-Check out this [Diagram](http://i.imgur.com/yjNkiwL.png)  
-
-Check out [Alcohol Consumption Exercises Video Tutorial](https://youtu.be/az67CMdmS6s) to watch a data scientist go through the exercises
-
-
-### Step 1. Import the necessary libraries
-
-
-```python
-import pandas as pd
-import numpy as np
-```
-
-### Step 2. Import the dataset from this [address](https://raw.githubusercontent.com/justmarkham/DAT8/master/data/drinks.csv). 
-
-### Step 3. Assign it to a variable called drinks.
-
-
-```python
-drinks = pd.read_csv("https://raw.githubusercontent.com/justmarkham/DAT8/master/data/drinks.csv")
-```
-
-### Step 4. Which continent drinks more beer on average?
-
-
-```python
-drinks.groupby("continent")["beer_servings"].mean().sort_values().tail(1)
-```
-
-
-
-
-    continent
-    EU    193.777778
-    Name: beer_servings, dtype: float64
-
-
-
-### Step 5. For each continent print the statistics for wine consumption.
-
-
-```python
-drinks.groupby("continent")["wine_servings"].describe()
-```
-
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>count</th>
-      <th>mean</th>
-      <th>std</th>
-      <th>min</th>
-      <th>25%</th>
-      <th>50%</th>
-      <th>75%</th>
-      <th>max</th>
-    </tr>
-    <tr>
-      <th>continent</th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>AF</th>
-      <td>53.0</td>
-      <td>16.264151</td>
-      <td>38.846419</td>
-      <td>0.0</td>
-      <td>1.0</td>
-      <td>2.0</td>
-      <td>13.00</td>
-      <td>233.0</td>
-    </tr>
-    <tr>
-      <th>AS</th>
-      <td>44.0</td>
-      <td>9.068182</td>
-      <td>21.667034</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>1.0</td>
-      <td>8.00</td>
-      <td>123.0</td>
-    </tr>
-    <tr>
-      <th>EU</th>
-      <td>45.0</td>
-      <td>142.222222</td>
-      <td>97.421738</td>
-      <td>0.0</td>
-      <td>59.0</td>
-      <td>128.0</td>
-      <td>195.00</td>
-      <td>370.0</td>
-    </tr>
-    <tr>
-      <th>OC</th>
-      <td>16.0</td>
-      <td>35.625000</td>
-      <td>64.555790</td>
-      <td>0.0</td>
-      <td>1.0</td>
-      <td>8.5</td>
-      <td>23.25</td>
-      <td>212.0</td>
-    </tr>
-    <tr>
-      <th>SA</th>
-      <td>12.0</td>
-      <td>62.416667</td>
-      <td>88.620189</td>
-      <td>1.0</td>
-      <td>3.0</td>
-      <td>12.0</td>
-      <td>98.50</td>
-      <td>221.0</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-### Step 6. Print the mean alcohol consumption per continent for every column
-
-
-```python
-drinks.groupby("continent").mean(numeric_only=True)
-```
-
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>beer_servings</th>
-      <th>spirit_servings</th>
-      <th>wine_servings</th>
-      <th>total_litres_of_pure_alcohol</th>
-    </tr>
-    <tr>
-      <th>continent</th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>AF</th>
-      <td>61.471698</td>
-      <td>16.339623</td>
-      <td>16.264151</td>
-      <td>3.007547</td>
-    </tr>
-    <tr>
-      <th>AS</th>
-      <td>37.045455</td>
-      <td>60.840909</td>
-      <td>9.068182</td>
-      <td>2.170455</td>
-    </tr>
-    <tr>
-      <th>EU</th>
-      <td>193.777778</td>
-      <td>132.555556</td>
-      <td>142.222222</td>
-      <td>8.617778</td>
-    </tr>
-    <tr>
-      <th>OC</th>
-      <td>89.687500</td>
-      <td>58.437500</td>
-      <td>35.625000</td>
-      <td>3.381250</td>
-    </tr>
-    <tr>
-      <th>SA</th>
-      <td>175.083333</td>
-      <td>114.750000</td>
-      <td>62.416667</td>
-      <td>6.308333</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-### Step 7. Print the median alcohol consumption per continent for every column
-
-
-```python
-drinks.groupby("continent").median(numeric_only=True)
-```
-
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>beer_servings</th>
-      <th>spirit_servings</th>
-      <th>wine_servings</th>
-      <th>total_litres_of_pure_alcohol</th>
-    </tr>
-    <tr>
-      <th>continent</th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>AF</th>
-      <td>32.0</td>
-      <td>3.0</td>
-      <td>2.0</td>
-      <td>2.30</td>
-    </tr>
-    <tr>
-      <th>AS</th>
-      <td>17.5</td>
-      <td>16.0</td>
-      <td>1.0</td>
-      <td>1.20</td>
-    </tr>
-    <tr>
-      <th>EU</th>
-      <td>219.0</td>
-      <td>122.0</td>
-      <td>128.0</td>
-      <td>10.00</td>
-    </tr>
-    <tr>
-      <th>OC</th>
-      <td>52.5</td>
-      <td>37.0</td>
-      <td>8.5</td>
-      <td>1.75</td>
-    </tr>
-    <tr>
-      <th>SA</th>
-      <td>162.5</td>
-      <td>108.5</td>
-      <td>12.0</td>
-      <td>6.85</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-### Step 8. Print the mean, min and max values for spirit consumption.
-#### This time output a DataFrame
-
-
-```python
-drinks["spirit_servings"].agg(["mean", "min", "max"])
-```
-
-
-
-
-    mean     80.994819
-    min       0.000000
-    max     438.000000
-    Name: spirit_servings, dtype: float64
-
-
-
-
-```python
-
-```
+   ],
+   "source": [
+    "# your solution goes here\n",
+    "cars >> group_by('origin', 'model_year') >> summarize(mpg_mean=mean(X.mpg)) >> head(5)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.12.3"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}
