@@ -1,4 +1,6 @@
 SELF LEADER: Mateusz Mazurek
+NO COLLABORATORS:
+- [Reasoning](Reasoning.md)
 
 # Reports
 
