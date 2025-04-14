@@ -333,6 +333,12 @@ norm = np.random.normal(loc = 10, scale = 1, size = 1000)
 p = plt.hist(norm, alpha = .6)
 ```
 
+
+    
+![png](output_33_0.png)
+    
+
+
 #### Skewed data
 
 > **Skew** means there are values *elongating* one of the "tails" of a distribution.
@@ -383,7 +389,7 @@ plt.arrow(20, 100, dx = 0, dy = -50, width = .3, head_length = 10, facecolor = "
 
 
 
-    <matplotlib.patches.FancyArrow at 0x7ae74b527e90>
+    <matplotlib.patches.FancyArrow at 0x2606ac87510>
 
 
 
@@ -407,7 +413,7 @@ print("Normal with outliers")
 ```
 
     Normal with outliers
-
+    
 
 #### Check-in
 
@@ -428,11 +434,11 @@ In a somewhat **right-skewed distribution** (like below), what's larger––the
 
 ```python
 ### Your code here
-print("There is nothing here... ?")
+print(np.mean(data), np.median(data))
 ```
 
-    There is nothing here... ?
-
+    10.066930184458462 10.04253198001635
+    
 
 ### Modifying our plot
 
@@ -477,6 +483,19 @@ plt.title("Distribution of Attack Scores")
 plt.axvline(df_pokemon['Attack'].mean(), linestyle = "dotted")
 ```
 
+
+
+
+    <matplotlib.lines.Line2D at 0x2606c2bb810>
+
+
+
+
+    
+![png](output_48_1.png)
+    
+
+
 ## Scatterplots
 
 ### What are scatterplots?
@@ -500,6 +519,12 @@ y = np.arange(11, 20)
 p = plt.scatter(x, y)
 ```
 
+
+    
+![png](output_52_0.png)
+    
+
+
 #### Check-in
 
 Are these variables related? If so, how?
@@ -510,6 +535,12 @@ x = np.random.normal(loc = 10, scale = 1, size = 100)
 y = x * 2 + np.random.normal(loc = 0, scale = 2, size = 100)
 plt.scatter(x, y, alpha = .6);
 ```
+
+
+    
+![png](output_54_0.png)
+    
+
 
 #### Check-in
 
