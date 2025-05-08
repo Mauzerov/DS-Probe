@@ -12,3 +12,5 @@ NO COLLABORATORS:
 
 - [Report 4. (Visualization)](Exercise%205/Exercise5.md)
 - [Report 5. (Visualization)](Exercise%206/Exercise6.md)
+
+- [Report 6. Univariate Analysis)](Exercise8/Exercise8.md)
