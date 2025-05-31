@@ -16,3 +16,5 @@ NO COLLABORATORS:
 - [Report 6. (Univariate Analysis)](Exercise8/Exercise8.md)
 
 - [Report 7. (Bivariate Analysis)](Exercise9/Exercise9.md)
+
+- [Report 8. (Regression Analysis)](Exercise10/Exercise10.md)
